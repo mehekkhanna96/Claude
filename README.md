@@ -56,7 +56,14 @@ python flight_advisor.py
 ### CLI Arguments
 
 ```bash
+# Route + month
 python flight_advisor.py --origin SIN --destination BKK --month 2026-08
+
+# Free-form query
+python flight_advisor.py --query "When should I book SIN to Bali for July 2026?"
+
+# With currency
+python flight_advisor.py --origin BOM --destination KUL --month 2026-11 --currency USD
 ```
 
 | Flag | Description | Example |
@@ -64,6 +71,8 @@ python flight_advisor.py --origin SIN --destination BKK --month 2026-08
 | `--origin` | IATA code or city name | `SIN`, `BOM`, `singapore` |
 | `--destination` | IATA code or country name | `BKK`, `DPS`, `thailand` |
 | `--month` | Month to analyze (YYYY-MM) | `2026-08` |
+| `--query` | Free-form question for the agent | `"When to book SIN→Bali?"` |
+| `--currency` | Currency code for prices | `SGD` (default), `USD`, `INR` |
 
 ### Supported Origins
 
