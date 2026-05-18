@@ -36,6 +36,7 @@ from rich.rule import Rule
 from rich.text import Text
 
 from amadeus_client import AmadeusClient, AmadeusAPIError, AmadeusRateLimitError
+from mock_amadeus_client import MockAmadeusClient
 
 load_dotenv()
 
@@ -850,12 +851,17 @@ Examples:
     parser.add_argument("--month", help="Target travel month in YYYY-MM format (e.g. 2025-08)")
     parser.add_argument("--query", help="Free-form query sent directly to the agent")
     parser.add_argument("--currency", default="SGD", help="Currency code for prices (default: SGD)")
+    parser.add_argument("--mock", action="store_true", help="Use mock Amadeus data (no Amadeus API key needed)")
     args = parser.parse_args()
 
     # --- Validate environment ---
     anthropic_key = os.getenv("ANTHROPIC_API_KEY")
     amadeus_key = os.getenv("AMADEUS_API_KEY")
     amadeus_secret = os.getenv("AMADEUS_API_SECRET")
+
+    if args.mock:
+        amadeus_key = amadeus_key or "mock"
+        amadeus_secret = amadeus_secret or "mock"
 
     missing = [k for k, v in [
         ("ANTHROPIC_API_KEY", anthropic_key),
@@ -877,7 +883,11 @@ Examples:
         )
         sys.exit(1)
 
-    amadeus = AmadeusClient(amadeus_key, amadeus_secret)
+    if args.mock:
+        amadeus = MockAmadeusClient()
+        console.print("[dim yellow]Running in mock mode — using synthetic price data.[/dim yellow]\n")
+    else:
+        amadeus = AmadeusClient(amadeus_key, amadeus_secret)
 
     # --- Banner ---
     console.print(
